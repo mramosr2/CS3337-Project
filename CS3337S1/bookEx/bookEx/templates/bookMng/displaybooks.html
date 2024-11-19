@@ -26,6 +26,9 @@
             Publisher User
         </th>
         <th>
+            Add to Favorites
+        </th>
+        <th>
             Book Rating (1 Per User)
          </th>
          <th>
@@ -37,7 +40,9 @@
             <tr>
                 <td><a href="book_detail/{{ book.id }}">{{ book.name }}</a></td>
                 <td>{{ book.username }}</td>
-
+               <td>
+                   <a href="{% url 'add_to_favorites' book.id %}">Add to Favorites</a>
+               </td>
              <td>
                {% if book.avg_rating %}
                    Average Rating: {{ book.avg_rating|floatformat:1 }}
