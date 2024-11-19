@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from .models import Favorite
 
 # Create your views here.
 from .models import MainMenu
@@ -113,6 +114,25 @@ def about(request):
     return render(request, 'bookMng/about.html', {
         'item_list': MainMenu.objects.all(),
     })
+
+def favorite_list(request):
+    favorites = Favorite.objects.filter(user=request.user)
+    return render(request, 'bookMng/favorite_list.html', {
+        'item_list': MainMenu.objects.all(),
+        'favorites': favorites,
+    })
+
+
+def add_to_favorites(request, book_id):
+    book = Book.objects.get(id=book_id)
+    Favorite.objects.get_or_create(user=request.user, book=book) 
+    return HttpResponseRedirect('/favorites/')
+
+
+def remove_from_favorites(request, book_id):
+    book = Book.objects.get(id=book_id) 
+    Favorite.objects.filter(user=request.user, book=book).delete() 
+    return HttpResponseRedirect('/favorites/') 
 
 
 def search_books(request):
