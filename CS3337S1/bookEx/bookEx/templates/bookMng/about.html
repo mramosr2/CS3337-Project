@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block sidenav %}
+   {% for item in item_list %}
+      <li><a href="{{ item.link }}">{{ item.item }}</a></li>
+   {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<h1>About Us</h1>
+<p>Welcome to the Book Exchange platform! Our mission is to create a community-driven space for book lovers to exchange, lend, and borrow books. We aim to make books accessible to everyone and foster a love for reading in our community.</p>
+
+<h2>Our Vision</h2>
+<p>We believe that every book has a new story to tell and a new reader waiting for it. Our platform connects readers and allows them to share stories, knowledge, and experiences through books.</p>
+
+<h2>Our Team</h2>
+<p>We are a dedicated team of developers and book enthusiasts committed to building a friendly and reliable book exchange community. Our goal is to provide a seamless experience for all users, whether they are lending, borrowing, or simply exploring our collection.</p>
+
+<h2>Team Members</h2>
+<p>Peter Uy, Alejandro Perez, Hunter Williamson, Michael Ramos-Rivera, Weihao Liu</p>
+
+{% endblock content %}

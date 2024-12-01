@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block sidenav %}
+   {% for item in item_list %}
+    <li><a href="{{ item.link }}" class="text-white">{{ item.item }}</a></li>
+   {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<h1 class="mb-4 text-white">My Favorite Books</h1>
+<div class="table-responsive">
+    <table class="table table-bordered table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Book Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for favorite in favorites %}
+            <tr>
+                <td>{{ favorite.book.name }}</td>
+                <td>
+                    <a href="{% url 'remove_from_favorites' favorite.book.id %}" class="btn btn-outline-danger btn-sm">Remove</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

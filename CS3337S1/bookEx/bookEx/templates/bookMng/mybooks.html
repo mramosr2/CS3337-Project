@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block sidenav %}
+   {% for item in item_list %}
+    <li><a href="{{ item.link }}" class="text-white">{{ item.item }}</a></li>
+   {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<h1 class="mb-4 text-white">My Books</h1>
+{% if user.is_authenticated %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Publisher User</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td><a href="book_detail/{{ book.id }}" class="text-decoration-none text-white">{{ book.name }}</a></td>
+                    <td>{{ book.username }}</td>
+                    <td><a href="book_delete/{{ book.id }}" class="btn btn-outline-danger btn-sm">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p class="text-light">Please log in to view your books.</p>
+{% endif %}
+{% endblock content %}

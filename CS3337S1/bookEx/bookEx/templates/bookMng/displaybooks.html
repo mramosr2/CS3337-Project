@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block sidenav %}
+   {% for item in item_list %}
+    <li><a href="{{ item.link }}" class="text-white">{{ item.item }}</a></li>
+   {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<h1 class="mb-4 text-white">Display Books</h1>
+
+<form method="get" action="{% url 'displaybooks' %}" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="q" placeholder="Search books by title" value="{{ query }}" class="form-control">
+        <button type="submit" class="btn btn-light">Search</button>
+    </div>
+</form>
+
+{% if query %}
+    <p class="text-light">Showing results for "<strong>{{ query }}</strong>":</p>
+{% endif %}
+
+<div class="table-responsive">
+    <table class="table table-bordered table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Book Name</th>
+                <th>Publisher User</th>
+                <th>Add to Favorites</th>
+                <th>Book Rating (1 Per User)</th>
+                <th>Select Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if books %}
+                {% for book in books %}
+                    <tr>
+                        <!-- Book name with hover underline animation and additional styles -->
+                        <td><a href="book_detail/{{ book.id }}" class="text-decoration-none text-white hover-underline-animation book-link">{{ book.name }}</a></td>
+                        <td>{{ book.username }}</td>
+                        <td><a href="{% url 'add_to_favorites' book.id %}" class="btn btn-outline-light btn-sm">Add to Favorites</a></td>
+                        <td>
+                            {% if book.avg_rating %}
+                                Average Rating: {{ book.avg_rating|floatformat:1 }}
+                            {% else %}
+                                <span class="text-white">No ratings yet.</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'rate_book' book.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <select name="rating" id="rating" class="form-select form-select-sm bg-black text-white border-white d-inline w-auto">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-outline-light btn-sm">Submit Rating</button>
+                                </form>
+                            {% else %}
+                                <span class="text-danger">Please log in to rate this book.</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-light">No Such Book Found</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

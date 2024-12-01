@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block sidenav %}
+   {% for item in item_list %}
+    <li><a href="{{ item.link }}" class="text-white">{{ item.item }}</a></li>
+   {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<h1 class="mb-4 text-white">Book Detail</h1>
+<div class="table-responsive">
+    <table class="table table-bordered table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Book Name</th>
+                <th>Book Price</th>
+                <th>Publisher User</th>
+                <th>Book Cover</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ book.name }}</td>
+                <td>{{ book.price }}</td>
+                <td>{{ book.username }}</td>
+                <td>
+                    <img src="{% static book.pic_path %}" class="img-fluid rounded" alt="Book Cover" style="max-height: 100px;">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<br>
+<h2 class="text-white">Comments</h2>
+{% if not book.comments.all %}
+    <p class="text-white">No Comments Found...</p>
+{% else %}
+    {% for comment in book.comments.all %}
+        <div class="mb-3">
+            <strong class="text-white">
+                {{ comment.user.username }} - {{ comment.created_at }}
+            </strong>
+            <p class="text-light">{{ comment.text }}</p>
+            <hr class="border-light">
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if user.is_authenticated %}
+    <h3 class="text-white">Add a Comment</h3>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="text" class="form-control mb-3" rows="3" placeholder="Write your comment here..."></textarea>
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+{% else %}
+    <p class="text-muted">You must <a href="{% url 'login' %}" class="text-decoration-none">log in</a> to post a comment.</p>
+{% endif %}
+{% endblock content %}
