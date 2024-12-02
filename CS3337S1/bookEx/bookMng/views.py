@@ -96,6 +96,11 @@ def book_detail(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     book.pic_path = book.picture.url[14:]
 
+    book.avg_rating = book.ratings.aggregate(Avg('rating'))['rating__avg']
+
+    user_rating = book.ratings.filter(user=request.user).first()
+    book.user_rating = user_rating.rating if user_rating else None
+
     if request.method == 'POST':
         # Create a new comment
         text = request.POST.get('text', '').strip()
