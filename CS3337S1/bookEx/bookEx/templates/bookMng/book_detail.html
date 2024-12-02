@@ -32,6 +32,56 @@
     </table>
 </div>
 
+<hr>
+
+<h2>Ratings</h2>
+
+{% if book.avg_rating %}
+    <p>Average Rating: {{ book.avg_rating|floatformat:1 }}</p>
+{% else %}
+    <p>No ratings yet.</p>
+{% endif %}
+
+{% if book.user_rating %}
+    <p>Your Rating: {{ book.user_rating }}</p>
+{% endif %}
+
+{% if user.is_authenticated %}
+    {% if not book.user_rating %}
+        <!-- If the user has not rated this book, show a rating form -->
+        <h4>Rate this Book</h4>
+        <form method="post" action="{% url 'rate_book' book.id %}">
+            {% csrf_token %}
+            <label for="rating">Your Rating:</label>
+            <select name="rating" id="rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <button type="submit">Submit Rating</button>
+        </form>
+    {% else %}
+        <!-- If the user has already rated this book, show an update form -->
+        <h4>Update Your Rating</h4>
+        <form method="post" action="{% url 'rate_book' book.id %}">
+            {% csrf_token %}
+            <label for="rating">Your Rating:</label>
+            <select name="rating" id="rating">
+                <option value="1" {% if book.user_rating == 1 %}selected{% endif %}>1</option>
+                <option value="2" {% if book.user_rating == 2 %}selected{% endif %}>2</option>
+                <option value="3" {% if book.user_rating == 3 %}selected{% endif %}>3</option>
+                <option value="4" {% if book.user_rating == 4 %}selected{% endif %}>4</option>
+                <option value="5" {% if book.user_rating == 5 %}selected{% endif %}>5</option>
+            </select>
+            <button type="submit">Update Rating</button>
+        </form>
+    {% endif %}
+{% else %}
+    <p>Please log in to rate this book.</p>
+{% endif %}
+
 <br>
 <h2 class="text-white">Comments</h2>
 {% if not book.comments.all %}
