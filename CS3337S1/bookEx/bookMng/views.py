@@ -66,6 +66,9 @@ def displaybooks(request):
     for b in books:
         b.pic_path = b.picture.url[14:]
         b.avg_rating = b.ratings.aggregate(Avg('rating'))['rating__avg']
+        b.rating_count = b.ratings.count()
+        user_rating = b.ratings.filter(user=request.user).first()
+        b.user_rating = user_rating.rating if user_rating else None
 
     return render(request,
                   'bookMng/displaybooks.html',
@@ -180,6 +183,10 @@ def rate_book(request, book_id):
             # If no rating exists, create a new one
             rating = Rating(book=book, user=request.user, rating=new_rating)
             rating.save()
+
+        avg_rating = book.ratings.aggregate(Avg('rating'))['rating__avg']
+        book.avg_rating = avg_rating
+        book.save()
 
         return redirect('displaybooks')
     return redirect('displaybooks')
