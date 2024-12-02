@@ -42,27 +42,46 @@
                         <td><a href="{% url 'add_to_favorites' book.id %}" class="btn btn-outline-light btn-sm">Add to Favorites</a></td>
                         <td>
                             {% if book.avg_rating %}
-                                Average Rating: {{ book.avg_rating|floatformat:1 }}
+                                Average Rating: {{ book.avg_rating|floatformat:1 }} <br>
+                                Total Ratings: {{ book.rating_count }}
                             {% else %}
                                 <span class="text-white">No ratings yet.</span>
                             {% endif %}
                         </td>
                         <td>
-                            {% if user.is_authenticated %}
-                                <form method="post" action="{% url 'rate_book' book.id %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <select name="rating" id="rating" class="form-select form-select-sm bg-black text-white border-white d-inline w-auto">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-outline-light btn-sm">Submit Rating</button>
-                                </form>
-                            {% else %}
-                                <span class="text-danger">Please log in to rate this book.</span>
-                            {% endif %}
+                             {% if user.is_authenticated %}
+                               {% if not book.user_rating %}
+                                   <h4>Rate this Book</h4>
+                                   <form method="post" action="{% url 'rate_book' book.id %}">
+                                       {% csrf_token %}
+                                       <label for="rating">Your Rating:</label>
+                                       <select name="rating" id="rating">
+                                           <option value="1">1</option>
+                                           <option value="2">2</option>
+                                           <option value="3">3</option>
+                                           <option value="4">4</option>
+                                           <option value="5">5</option>
+                                       </select>
+                                       <button type="submit">Submit Rating</button>
+                                   </form>
+                               {% else %}
+                                   <h4>Update Your Rating</h4>
+                                   <form method="post" action="{% url 'rate_book' book.id %}">
+                                       {% csrf_token %}
+                                       <label for="rating">Your Rating:</label>
+                                       <select name="rating" id="rating">
+                                           <option value="1" {% if book.user_rating == 1 %}selected{% endif %}>1</option>
+                                           <option value="2" {% if book.user_rating == 2 %}selected{% endif %}>2</option>
+                                           <option value="3" {% if book.user_rating == 3 %}selected{% endif %}>3</option>
+                                           <option value="4" {% if book.user_rating == 4 %}selected{% endif %}>4</option>
+                                           <option value="5" {% if book.user_rating == 5 %}selected{% endif %}>5</option>
+                                       </select>
+                                       <button type="submit">Update Rating</button>
+                                   </form>
+                               {% endif %}
+                           {% else %}
+                               <p>Please log in to rate this book.</p>
+                           {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
