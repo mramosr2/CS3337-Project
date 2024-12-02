@@ -62,13 +62,15 @@ def displaybooks(request):
     else:
         books = Book.objects.all()
 
-
     for b in books:
         b.pic_path = b.picture.url[14:]
         b.avg_rating = b.ratings.aggregate(Avg('rating'))['rating__avg']
         b.rating_count = b.ratings.count()
-        user_rating = b.ratings.filter(user=request.user).first()
-        b.user_rating = user_rating.rating if user_rating else None
+        if request.user.is_authenticated:
+            user_rating = b.ratings.filter(user=request.user).first()
+            b.user_rating = user_rating.rating if user_rating else None
+        else:
+            b.user_rating = None  # Set to None if the user is not logged in
 
     return render(request,
                   'bookMng/displaybooks.html',
@@ -77,6 +79,7 @@ def displaybooks(request):
                       'books': books,
                       'query': query
                   })
+
 
 @login_required(login_url='login')
 def mybooks(request):
